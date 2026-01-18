@@ -1,0 +1,12 @@
+router.get("/allorders", (req, res) => {
+  const db = readDB();
+  const ordersList = [];
+
+  db.orders.forEach(order => ordersList.push(order));
+
+  res.json({
+    success: true,
+    count: ordersList.length,
+    data: ordersList
+  });
+});
