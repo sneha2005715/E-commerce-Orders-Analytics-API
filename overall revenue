@@ -1,0 +1,12 @@
+router.get("/alltotalrevenue", (req, res) => {
+  const db = readDB();
+
+  const totalRevenue = db.orders
+    .filter(o => o.status !== "cancelled")
+    .reduce((sum, order) => {
+      const product = db.products.find(p => p.id === order.productId);
+      return sum + order.quantity * product.price;
+    }, 0);
+
+  res.json({ success: true, totalRevenue });
+});
