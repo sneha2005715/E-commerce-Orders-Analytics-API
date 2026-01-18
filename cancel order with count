@@ -1,0 +1,10 @@
+router.get("/cancelled-orders", (req, res) => {
+  const db = readDB();
+  const cancelledOrders = db.orders.filter(o => o.status === "cancelled");
+
+  res.json({
+    success: true,
+    count: cancelledOrders.length,
+    data: cancelledOrders
+  });
+});
