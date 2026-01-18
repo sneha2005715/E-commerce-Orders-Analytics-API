@@ -1,0 +1,27 @@
+router.patch("/change-status/:orderId", (req, res) => {
+  const orderId = Number(req.params.orderId);
+  const { status } = req.body;
+  const db = readDB();
+
+  const order = db.orders.find(o => o.id === orderId);
+  if (!order) {
+    return res.status(404).json({ success: false, message: "Order not found" });
+  }
+
+  if (order.status === "cancelled" || order.status === "delivered") {
+    return res.status(400).json({ success: false, message: "Status cannot be changed" });
+  }
+
+  const flow = ["placed", "shipped", "delivered"];
+  const currentIndex = flow.indexOf(order.status);
+  const newIndex = flow.indexOf(status);
+
+  if (newIndex !== currentIndex + 1) {
+    return res.status(400).json({ success: false, message: "Invalid status flow" });
+  }
+
+  order.status = status;
+  writeDB(db);
+
+  res.json({ success: true, data: order });
+});
