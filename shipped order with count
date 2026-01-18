@@ -1,0 +1,10 @@
+router.get("/shipped", (req, res) => {
+  const db = readDB();
+  const shippedOrders = db.orders.filter(o => o.status === "shipped");
+
+  res.json({
+    success: true,
+    count: shippedOrders.length,
+    data: shippedOrders
+  });
+});
