@@ -1,0 +1,15 @@
+router.get("/total-revenue/:productId", (req, res) => {
+  const productId = Number(req.params.productId);
+  const db = readDB();
+
+  const product = db.products.find(p => p.id === productId);
+  if (!product) {
+    return res.status(404).json({ success: false, message: "Product not found" });
+  }
+
+  const totalRevenue = db.orders
+    .filter(o => o.productId === productId && o.status !== "cancelled")
+    .reduce((sum, order) => sum + order.quantity * product.price, 0);
+
+  res.json({ success: true, productId, totalRevenue });
+});
